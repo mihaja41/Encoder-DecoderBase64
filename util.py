@@ -325,9 +325,15 @@ def get6bitAssembled(stringResult):
 def get6bitBase64(tableValues):
     tableResult = []
     for i in range(0, len(tableValues)):
+        taille  = len(tableValues[i])
+        if taille < 6 :
+            addBit(tableValues[i] , 6-taille)
         tableResult.append(nombreToGXString(tableValues[i], 2))
     return tableResult
 
+def addBit(chaine , nbr ) :
+    for i in range(0, nbr ) :
+        chaine.append('0')
 
 def convertTo64( tableValues ):
     finalStr  = ""
@@ -335,7 +341,13 @@ def convertTo64( tableValues ):
         finalStr+=  getByKey64(tableValues[i])
     return finalStr
 
+def addPadding(chaine_base64):
+    # Tant que la division par 4 n'est pas parfaite (reste différent de 0)
+    while len(chaine_base64) % 4 != 0:
+        chaine_base64 += "="
+    return chaine_base64
 
+        
 def encoderBase64(text):
     tableResult = []
     tableResult1 = []
@@ -348,13 +360,13 @@ def encoderBase64(text):
 
     tableResult = assembleBinary2D(tableBinary)
     # print(tableResult1)
-    # print(tableResult)
+    print(tableResult)
     tableVal  = get6bitAssembled(tableResult) 
     table6bit = get6bitBase64(tableVal) 
-    table64bit = convertTo64(table6bit ) 
+    table64bit =addPadding( convertTo64(table6bit ))
     
     print(text + " => base64 :| " + table64bit)
-    return tableResult
+    return table64bit
 
 
 
@@ -363,7 +375,13 @@ def decoderBase64(text):
     tableResult = []
     
     
-# encoderBase64("HelloLuckas!")
-decoderBase64("SGVsbG9MdWNrYXMh") 
+# encoderBase64("A")
+# decoderBase64("He") 
 # nombreToGX1( 11  , 2 )
 # print(getByChar('a'))
+encoderBase64("ABC")
+encoderBase64("AB")
+encoderBase64("A")
+encoderBase64("Python")
+encoderBase64("Hello")
+encoderBase64("Hi!")

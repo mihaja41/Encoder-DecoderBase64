@@ -6,3 +6,7 @@ ex : be proactive
 tena ilaina ve izany am maha informaticien anao 
 
 trimozafydyna@yahoo.fr 
+
+
+
+encoderBase64("ABC")"QUJD"Padding =encoderBase64("AB")"QUI="Padding ==encoderBase64("A")"QQ=="Texte long (0 =)encoderBase64("Python")"UHl0aG9u"Texte long (1 =)encoderBase64("Hello")"SGVsbG8="Texte long (2 =)encoderBase64("Hi!")"SGkh"
