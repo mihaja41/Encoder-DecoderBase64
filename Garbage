@@ -1,0 +1,11 @@
+
+# # nombre en binaire
+# def binToGX(data):
+#     result = 0
+#     val =  inverse_val_tab(data)
+#     for i in range(0, len(data)):
+#         result =  result + (val[i] * (2 ** i))
+#     print("Utilisation de Binaire to Nbr de GeneratX -> " + tTos(data) + " = " + str(result))
+#     return result
+
+
