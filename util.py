@@ -62,6 +62,13 @@ def ascii_table():
         55: "7",
         56: "8",
         57: "9",
+        58 :":", 
+        59 :";", 
+        60 :"<", 
+        61 :"=", 
+        62 :">", 
+        63 :"?", 
+        64 :"@",        
         65: "A",
         66: "B",
         67: "C",
@@ -88,6 +95,12 @@ def ascii_table():
         88: "X",
         89: "Y",
         90: "Z",
+        91: "[",
+        92: "\\",
+        93: "]",
+        94: "^",
+        95: "_",
+        96: "`",
         97: "a",
         98: "b",
         99: "c",
@@ -255,7 +268,7 @@ def binGX(data, bits=8):
     return val
 
 
-# print( binGX(2))
+# print( binGX(2 , 6))
 
 
 # nombre en binaire
@@ -268,6 +281,8 @@ def nombreToGX(data, n):
     return result
 
 
+#  fonction generaliser pour convertire une sequence de nombre dune base a une autre base 
+#  EX:( [0, 1, 0, 0, 1, 0, 0, 0] , 2 ) -> 72 en base10
 def nombreToGXString(data, n):
     result = 0
     val = inverse_val_tab(data)
@@ -276,7 +291,7 @@ def nombreToGXString(data, n):
     # print("Utilisation de Base"+str(n)+" en decimal de GeneratX -> " + tTos(data) + " = " + str(result))
     return result
 
-
+  
 
 def nbtTotable(nombre):
     valString = str(nombre)
@@ -304,13 +319,16 @@ def assembleBinary2D(table):
     return stringResult
 
 
-def get6bitAssembled(stringResult):
+def getNbitAssembled(stringResult , n ):
+    if( len(stringResult) == 0 ):
+        print("vide !! ")
+        # print("res  === " + stringResult)
     tableResult = []
     tableResult6bit = []
     tableResult6bit.append(stringResult[0])
     # print("Hello  - > " +  len(stringResult))
     for i in range(1, len(stringResult)):
-        if i % 6 == 0:
+        if i % n == 0:
             # print("Hello  - > " + str(i))
             tableResult.append(tableResult6bit)
             tableResult6bit = []
@@ -320,6 +338,8 @@ def get6bitAssembled(stringResult):
     
     tableResult.append(tableResult6bit)
     return tableResult 
+
+
 
 
 def get6bitBase64(tableValues):
@@ -357,31 +377,96 @@ def encoderBase64(text):
         bins = binGX(val)
         tableResult1.append(val)
         tableBinary.append(bins)
-
+    # print(tableBinary)
     tableResult = assembleBinary2D(tableBinary)
-    # print(tableResult1)
-    print(tableResult)
-    tableVal  = get6bitAssembled(tableResult) 
-    table6bit = get6bitBase64(tableVal) 
+    # print(tableResult)
+    tableVal  = getNbitAssembled(tableResult , 6 ) 
+    # print(tableVal)
+    table6bit = get6bitBase64(tableVal)
+    # print(table6bit ) 
     table64bit =addPadding( convertTo64(table6bit ))
-    
-    print(text + " => base64 :| " + table64bit)
+    # print( table64bit  ) 
+    # print(text + " => base64 :| " + table64bit)
     return table64bit
 
 
 
+#  Le nombre de de = compte 
+#  = : 00
+#  == : 0000
+def removeEqual( text )  :
+    nbrEqual = text.count("=")
+    finalText = text.replace("=" , "")
+    tableResult  = []
+    for i in range(0, len(finalText)) :
+        val = getByChar64(finalText[i])
+        tableResult.append(val)
+        # print(tableResult)
+    return [tableResult , nbrEqual ]    
 
+def bin6Bite( table64 )  : 
+    table6bit = []
+    for i in range(0, len( table64 )):
+        result = binGX(table64[i], 6)
+        table6bit.append(result)
+    # print(table6bit)
+    # print(  table6bit[-1])
+    return table6bit
+        
+
+def bin64Bite( table ) : 
+    # tableRes = []
+    str = ""
+    for i in range(0, len(table)) : 
+       val =  nombreToGXString( table[i] , 2 ) 
+       print(val  )
+       print(  getByKey(val))
+       str += getByKey(val)
+    return  str 
+       
 def decoderBase64(text):
     tableResult = []
-    
-    
+    tableVal  = removeEqual( text )
+    # print(table)
+    table6Bit  = bin6Bite(tableVal[0])
+    string2D  = assembleBinary2D(table6Bit) 
+    table8Bit =  getNbitAssembled(string2D , 8 ) 
+    print(table8Bit)
+    res  =  bin64Bite(table8Bit)
+    return res
+    # print(res)
+    # print(string2D)
+    # print("resultat ---")
+    # print(res)
+
 # encoderBase64("A")
 # decoderBase64("He") 
 # nombreToGX1( 11  , 2 )
-# print(getByChar('a'))
-encoderBase64("ABC")
-encoderBase64("AB")
-encoderBase64("A")
-encoderBase64("Python")
-encoderBase64("Hello")
-encoderBase64("Hi!")
+# print(getByChar('a'))+
+
+# encoderBase64("Hello")
+# encoderBase64("This is a much longer and more complex string that includes various characters, numbers 12345, and symbols !@#$%^&*()_-+={}[]|;':\",.<>?. It is perfect to test a Base64 decoder.")# encoderBase64("Aaaaa")
+# encoderBase64("Python")
+# encoderBase64("Hello")
+# encoderBase64("Hi!")
+# py = nombreToGXString([0, 1, 0, 0, 1, 0, 0, 0] , 2) 
+# print(py)
+
+# str  = "qjljqslkdjqlsdjkljkjqsdnlk=="
+# print(str.replace("=" , "") )
+# decoderBase64("VGhpcyBpcyBhIG11Y2ggbG9uZ2VyIGFuZCBtb3JlIGNvbXBsZXggc3RyaW5nIHRoYXQgaW5jbHVkZXMgdmFyaW91cyBjaGFyYWN0ZXJzLCBudW1iZXJzIDEyMzQ1LCBhbmQgc3ltYm9scyAhQCMkJV4mKigpXy0rPXt9W118Oyc6IiwuPD4/LiBJdCBpcyBwZXJmZWN0IHRvIHRlc3QgYSBCYXNlNjQgZGVjb2Rlci4=")
+
+
+
+with open("logo.png", "rb") as f:
+    data = f.read()
+    encoded = encoderBase64(str(data))
+
+
+with open("image.txt", "w") as f:
+    f.write(encoded)
+print(encoded)
+decoded = decoderBase64(encoded)
+
+with open("new_image.png", "wb") as f:
+    f.write(decoded)
